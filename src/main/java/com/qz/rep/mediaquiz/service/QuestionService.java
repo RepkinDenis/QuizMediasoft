@@ -1,14 +1,16 @@
 package com.qz.rep.mediaquiz.service;
 
+import com.qz.rep.mediaquiz.entity.Category;
 import com.qz.rep.mediaquiz.entity.Question;
 import com.qz.rep.mediaquiz.repository.QuestionRepository;
+import com.qz.rep.mediaquiz.service.dto.ExQuestionDto;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -27,16 +29,16 @@ public class QuestionService {
             count = 1;
         }
 
-        /*if (new Random().nextInt(2) == 0) {
+        if (new Random().nextInt(2) == 0) {
             return getRandomFromExt(count);
-        }*/
+        }
 
         var questions = questionRepository.findRandom(count);
         questions.forEach(question -> cache().put(question.getId().toString(), question));
         return questions;
     }
 
-    /*private List<Question> getRandomFromExt(Integer count) {
+    private List<Question> getRandomFromExt(Integer count) {
         if (count == null) {
             count = 1;
         }
@@ -67,7 +69,7 @@ public class QuestionService {
             cache().put(question.getId().toString(), question);
             return question;
         }).collect(Collectors.toList());
-    }*/
+    }
 
     public Optional<Question> findById(Long id) {
         var _question = cache().get(id.toString(), Question.class);
